@@ -5,9 +5,7 @@ import 'package:todo/shared/network/dio_helper.dart';
 import 'package:todo/shared/utils/app_routes.dart';
 import 'package:todo/shared/utils/app_strings.dart';
 import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'home/presentation/controller/add_new_task_controller/add_new_tsk_cubit.dart';
@@ -28,6 +26,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (BuildContext context) => HomeCubit()),
         BlocProvider(create: (BuildContext context) => AuthCubit()),
         BlocProvider(create: (BuildContext context) => TodoCubit()),
+
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

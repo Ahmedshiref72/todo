@@ -4,6 +4,12 @@ import '../../data/task_model.dart';
 abstract class HomeStates {}
 
 class HomeInitialState extends HomeStates {}
+class LogOutSuccessState extends HomeStates {}
+class LogOutErrorState extends HomeStates {
+  final String message;
+
+  LogOutErrorState(this.message);
+}
 
 class HomeLoadingState extends HomeStates {}
 

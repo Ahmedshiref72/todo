@@ -43,6 +43,9 @@ dependencies:
   qr_code_scanner:
   flutter_speed_dial:
   dotted_border:
+  shimmer:
+  buttons_tabbar:
+  popup_menu:
   fluttertoast: ^8.1.1
   lottie: ^2.0.0
   dio: ^4.0.6

@@ -1,17 +1,23 @@
+import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:todo/home/componantes/add_new_task_dial.dart';
 import 'package:todo/home/presentation/controller/home_controller/home_cubit.dart';
+import 'package:todo/shared/components/toast_component.dart';
 import 'package:todo/shared/utils/app_values.dart';
 import 'package:todo/shared/utils/navigation.dart';
 import '../../../shared/global/app_colors.dart';
 import '../../../shared/utils/app_assets.dart';
 import '../../../shared/utils/app_routes.dart';
+import '../../componantes/dialog_log_out.dart';
+import '../../componantes/home_shimmer.dart';
 import '../../componantes/widget_card.dart';
 import '../controller/home_controller/home_state.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -33,28 +39,26 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
   }
 
-  Future<void> _refresh() async {
-    context.read<HomeCubit>().fetchTasks();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: _refresh,
-      child: BlocConsumer<HomeCubit, HomeStates>(
-        listener: (context, state) {
-          if (state is HomeErrorState) {
-            // Optionally show a message or handle the error
-          }
-        },
-        builder: (context, state) {
-          if (state is HomeLoadingState) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is HomeLoadedState) {
-            return DefaultTabController(
-              length: 4,
-              child: Scaffold(
-                appBar: AppBar(
+    return BlocConsumer<HomeCubit, HomeStates>(
+      listener: (context, state) {
+        if (state is LogOutErrorState) {
+          showToast(text: state.message, state: ToastStates.ERROR);
+        } else if (state is LogOutSuccessState) {
+          showToast(
+              text: 'Logged out successfully', state: ToastStates.SUCCESS);
+          navigateTo(context: context, screenRoute: Routes.loginScreen);
+        }
+      },
+      builder: (context, state) {
+        if (state is HomeLoadingState) {
+          return buildShimmerEffect(context);
+        } else if (state is HomeLoadedState) {
+          return DefaultTabController(
+            length: 4,
+            child: Scaffold(
+              appBar: AppBar(
                   title: const Text(
                     'Logo',
                     style: TextStyle(
@@ -67,7 +71,9 @@ class _HomeScreenState extends State<HomeScreen>
                       children: [
                         GestureDetector(
                           onTap: () {
-                            navigateTo(context: context, screenRoute: Routes.profileScreen);
+                            navigateTo(
+                                context: context,
+                                screenRoute: Routes.profileScreen);
                           },
                           child: Image.asset(
                             ImageAssets.profile,
@@ -77,7 +83,12 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                         SizedBox(width: mediaQueryWidth(context) * 0.02),
                         IconButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            final shouldLogout =
+                                await showLogoutConfirmationDialog(context);
+                            if (shouldLogout == true) {
+                              context.read<HomeCubit>().logout();
+                            }
                             print('object');
                           },
                           icon: const Icon(
@@ -88,89 +99,106 @@ class _HomeScreenState extends State<HomeScreen>
                       ],
                     ),
                   ],
-                  bottom: TabBar(
-                    indicatorColor: Colors.red,
-                    controller: _tabController,
-                    tabs: [
-                      _buildTab('All', _tabController.index == 0),
-                      _buildTab('Waiting', _tabController.index == 1),
-                      _buildTab('In Progress', _tabController.index == 2),
-                      _buildTab('Finished', _tabController.index == 3),
-                    ],
-                    indicator: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(15), // Rounded corners
+                  bottom: PreferredSize(
+                    preferredSize: const Size.fromHeight(80),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text('My tasks',
+                              style: TextStyle(
+                                  color: AppColors.boldGrey, fontSize: 22)),
+                        ),
+                        SizedBox(height: mediaQueryHeight(context) * 0.01),
+                        ButtonsTabBar(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: AppColors.primary,
+                          ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                          labelSpacing: 10,
+                          unselectedDecoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: AppColors.backgroundLight.withOpacity(0.5),
+                          ),
+                          buttonMargin:
+                              EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                          height: mediaQueryHeight(context) * 0.05,
+                          tabs: const [
+                            Tab(
+                              child: Text(
+                                'All',
+                              ),
+                            ),
+                            Tab(
+                              child: Text(
+                                'In progress',
+                              ),
+                            ),
+                            Tab(
+                              child: Text(
+                                'Waiting',
+                              ),
+                            ),
+                            Tab(
+                                child: Text(
+                              'Finished',
+                            ))
+                          ],
+                          controller: _tabController,
+                          unselectedLabelStyle:
+                              TextStyle(color: AppColors.boldGrey),
+                          labelStyle: TextStyle(color: AppColors.background),
+                        ),
+                      ],
                     ),
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    isScrollable: true,
-                    labelColor: AppColors.background,
-                    unselectedLabelColor: AppColors.boldGrey,
-                    labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                    unselectedLabelStyle:
-                    const TextStyle(fontWeight: FontWeight.normal),
-                  ),
-                ),
-                backgroundColor: AppColors.background,
-                body: RefreshIndicator(
-                  onRefresh: _refresh,
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      buildTaskList(state.allTasks, 'No tasks available'),
-                      buildTaskList(
-                          state.waitingTasks, 'No waiting tasks available'),
-                      buildTaskList(
-                          state.inProgressTasks, 'No in-progress tasks available'),
-                      buildTaskList(
-                          state.finishedTasks, 'No finished tasks available'),
-                    ],
-                  ),
-                ),
-                floatingActionButton: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      buildDialQr (
-                        context,
-                            () {
-                          navigateTo(context: context, screenRoute: Routes.qrScreen);
-                        },
-                      ),
-                      SizedBox(height: mediaQueryHeight(context) * 0.02),
-                      buildDialAdd (
-                        context,
-                            () {
-                          navigateTo(context: context, screenRoute: Routes.addNewTaskScreen);
-                        },
-                      ),
-                    ],
-                  ),
+                  )),
+              backgroundColor: AppColors.background,
+              body: TabBarView(
+                controller: _tabController,
+                children: [
+                  buildTaskList(state.allTasks, 'No tasks available', context),
+                  buildTaskList(state.inProgressTasks,
+                      'No in-progress tasks available', context),
+                  buildTaskList(state.waitingTasks,
+                      'No waiting tasks available', context),
+                  buildTaskList(state.finishedTasks,
+                      'No finished tasks available', context),
+                ],
+              ),
+              floatingActionButton: Align(
+                alignment: Alignment.bottomRight,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    buildDialQr(
+                      context,
+                      () {
+                        navigateTo(
+                            context: context, screenRoute: Routes.qrScreen);
+                      },
+                    ),
+                    SizedBox(height: mediaQueryHeight(context) * 0.02),
+                    buildDialAdd(
+                      context,
+                      () {
+                        navigateTo(
+                            context: context,
+                            screenRoute: Routes.addNewTaskScreen);
+                      },
+                    ),
+                  ],
                 ),
               ),
-            );
-          } else if (state is HomeErrorState) {
-            return Center(child: Text(state.message));
-          } else {
-            return const Center(child: Text('Unexpected state'));
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildTab(String text, bool isSelected) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: AppColors.boldGrey,
-        ),
-      ),
+            ),
+          );
+        } else if (state is HomeErrorState) {
+          return Scaffold(body: Center(child: Text(state.message)));
+        } else {
+          return Scaffold(body: const Center(child: Text('Unexpected state')));
+        }
+      },
     );
   }
 }
