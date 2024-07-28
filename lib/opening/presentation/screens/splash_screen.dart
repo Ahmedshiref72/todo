@@ -29,7 +29,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
+    final String? user = prefs.getString('id');
     print('token: $token');
+    print('user: $user');
 
     if (token != null && token.isNotEmpty) {
 

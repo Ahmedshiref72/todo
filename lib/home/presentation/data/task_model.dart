@@ -8,6 +8,8 @@ class Task {
   final String user;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int v;
+
 
   Task({
     required this.id,
@@ -19,6 +21,8 @@ class Task {
     required this.user,
     required this.createdAt,
     required this.updatedAt,
+    required this.v,
+
   });
 
   factory Task.fromJson(Map<String, dynamic> json) {
@@ -30,6 +34,7 @@ class Task {
       priority: json['priority'],
       status: json['status'],
       user: json['user'],
+      v: json['__v']??0,
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
     );

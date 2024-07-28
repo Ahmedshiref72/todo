@@ -85,11 +85,10 @@ class _HomeScreenState extends State<HomeScreen>
                         IconButton(
                           onPressed: () async {
                             final shouldLogout =
-                                await showLogoutConfirmationDialog(context);
+                            await showLogoutConfirmationDialog(context);
                             if (shouldLogout == true) {
                               context.read<HomeCubit>().logout();
                             }
-                            print('object');
                           },
                           icon: const Icon(
                             Icons.logout,
@@ -123,32 +122,17 @@ class _HomeScreenState extends State<HomeScreen>
                             color: AppColors.backgroundLight.withOpacity(0.5),
                           ),
                           buttonMargin:
-                              EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                           height: mediaQueryHeight(context) * 0.05,
                           tabs: const [
-                            Tab(
-                              child: Text(
-                                'All',
-                              ),
-                            ),
-                            Tab(
-                              child: Text(
-                                'In progress',
-                              ),
-                            ),
-                            Tab(
-                              child: Text(
-                                'Waiting',
-                              ),
-                            ),
-                            Tab(
-                                child: Text(
-                              'Finished',
-                            ))
+                            Tab(child: Text('All')),
+                            Tab(child: Text('In progress')),
+                            Tab(child: Text('Waiting')),
+                            Tab(child: Text('Finished')),
                           ],
                           controller: _tabController,
                           unselectedLabelStyle:
-                              TextStyle(color: AppColors.boldGrey),
+                          TextStyle(color: AppColors.boldGrey),
                           labelStyle: TextStyle(color: AppColors.background),
                         ),
                       ],
@@ -174,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen>
                   children: [
                     buildDialQr(
                       context,
-                      () {
+                          () {
                         navigateTo(
                             context: context, screenRoute: Routes.qrScreen);
                       },
@@ -182,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen>
                     SizedBox(height: mediaQueryHeight(context) * 0.02),
                     buildDialAdd(
                       context,
-                      () {
+                          () {
                         navigateTo(
                             context: context,
                             screenRoute: Routes.addNewTaskScreen);

@@ -5,6 +5,7 @@ import 'package:todo/auth/presentation/screens/register_screen.dart';
 
 import '../../home/componantes/qr.dart';
 import '../../home/presentation/screens/add_new_task_screen.dart';
+import '../../home/presentation/screens/edit_task_screen.dart';
 import '../../home/presentation/screens/homescreen.dart';
 import '../../home/presentation/screens/one_task_screen.dart';
 import '../../home/presentation/screens/profile_screen.dart';
@@ -23,6 +24,7 @@ class Routes {
   static const String profileScreen = '/profileScreen';
   static const String qrScreen = '/qrScreen';
   static const String addNewTaskScreen = '/addNewTaskScreen';
+  static const String editTaskScreen = '/editTaskScreen';
 
 
 
@@ -53,6 +55,19 @@ class RouteGenerator {
       case Routes.taskDetailScreen:
         final taskId = routeSettings.arguments as String;
         return MaterialPageRoute(builder: (_) => TaskDetailsScreen(taskId: taskId));
+      case Routes.editTaskScreen: // Add this case
+        final args = routeSettings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => EditTaskScreen(
+            taskId: args['taskId'],
+            image: args['image'],
+            title: args['title'],
+            desc: args['desc'],
+            priority: args['priority'],
+            dueDate: args['dueDate'],
+            status: args['status'],
+          ),
+        );
 
       default:
         return unDefinedRoute();

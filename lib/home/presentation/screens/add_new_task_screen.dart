@@ -11,6 +11,7 @@ import '../../../shared/utils/app_assets.dart';
 import '../../componantes/custom_drop_dow_widget.dart';
 import '../controller/add_new_task_controller/add_new_task_states.dart';
 import '../controller/add_new_task_controller/add_new_tsk_cubit.dart';
+import '../controller/home_controller/home_cubit.dart';
 
 class AddNewTaskScreen extends StatelessWidget {
   final TextEditingController imageController = TextEditingController();
@@ -163,6 +164,7 @@ class AddNewTaskScreen extends StatelessWidget {
                         text: 'Task created successfully',
                         state: ToastStates.SUCCESS);
                     Navigator.pop(context);
+                    BlocProvider.of<HomeCubit>(context).fetchTasks();
                   } else if (state is TodoFailure) {
                     showToast(text: state.error, state: ToastStates.ERROR);
                   }
@@ -181,7 +183,7 @@ class AddNewTaskScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         BlocProvider.of<TodoCubit>(context).createTodo(
-                          image: imageController.text,
+                          image: 'image.png',
                           title: titleController.text,
                           desc: descController.text,
                           priority: priorityController.text,

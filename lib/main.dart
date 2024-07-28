@@ -1,5 +1,6 @@
 import 'package:todo/auth/presentation/controller/auth_cubit.dart';
 import 'package:todo/home/presentation/controller/home_controller/home_cubit.dart';
+import 'package:todo/home/presentation/controller/one_task_controller/one_task_cubit.dart';
 import 'package:todo/shared/global/app_theme.dart';
 import 'package:todo/shared/network/dio_helper.dart';
 import 'package:todo/shared/utils/app_routes.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (BuildContext context) => HomeCubit()),
         BlocProvider(create: (BuildContext context) => AuthCubit()),
         BlocProvider(create: (BuildContext context) => TodoCubit()),
+        BlocProvider(create: (BuildContext context) => TaskCubit()),
 
       ],
       child: MaterialApp(

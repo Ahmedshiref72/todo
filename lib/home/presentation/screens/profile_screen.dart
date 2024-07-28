@@ -5,6 +5,7 @@ import 'package:todo/shared/utils/app_values.dart';
 import '../../../shared/global/app_colors.dart';
 import '../../../shared/utils/app_assets.dart';
 import '../../componantes/contanier_widget.dart';
+import '../controller/home_controller/home_cubit.dart';
 import '../controller/profile/profile_cubit.dart';
 import '../controller/profile/profile_states.dart';
 
@@ -16,10 +17,12 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-
           leadingWidth: 30,
           leading: GestureDetector(
-              onTap: () => Navigator.pop(context),
+              onTap: () {
+                Navigator.pop(context);
+                context.read<HomeCubit>().fetchTasks();
+              },
               child: Image.asset(
                 ImageAssets.arrowBack,
                 color: AppColors.dark,
@@ -59,8 +62,7 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(
                       height: mediaQueryHeight(context) * .01,
                     ),
-                    profileWidget(context, profile.address,
-                        "LOCATION"),
+                    profileWidget(context, profile.address, "LOCATION"),
                   ],
                 ),
               );

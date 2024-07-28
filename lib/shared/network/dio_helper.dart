@@ -66,7 +66,7 @@ class DioHelper {
 
   static Future<Response> putData({
     required String url,
-    required FormData data,
+    required  Map<String, dynamic>? data,
     Map<String, dynamic>? query,
     String? token,
   }) async {
@@ -105,6 +105,23 @@ class DioHelper {
       throw Exception(e.message);
     }
   }
+  static Future<Response> deleteData({
+    required String url,
+    Map<String, dynamic>? query,
+    String? token,
+  }) async {
+    try {
+      if (token != null) {
+        dio!.options.headers['Authorization'] = 'Bearer $token';
+      }
+      return await dio!.delete(
+        url,
+        queryParameters: query,
+      );
+    } on DioError catch (e) {
+      throw Exception(e.message);
+    }
+  }
 }
 
 
@@ -117,7 +134,7 @@ class RefreshTokenInterceptor extends Interceptor {
   void onError(DioError err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401 || err.response?.statusCode == 400 ||
         err.response?.statusCode == 422 ||
-        err.message == 'unauthorized'||
+        err.message == 'Unauthorized'||
         err.message == 'Forbidden'||
         err.response?.statusCode == 403) {
       final prefs = await SharedPreferences.getInstance();

@@ -15,3 +15,13 @@ class TaskError extends TaskState {
   final String message;
   TaskError(this.message);
 }
+class DeleteLoading extends TaskState {}
+
+class DeleteLoaded extends TaskState {
+
+}
+
+class DeleteError extends TaskState {
+  final String message;
+  DeleteError(this.message);
+}

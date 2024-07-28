@@ -4,10 +4,14 @@ import 'package:intl/intl.dart';
 import 'package:todo/shared/global/app_colors.dart';
 import 'package:todo/shared/utils/app_values.dart';
 import 'package:todo/shared/utils/app_assets.dart';
-import 'package:popup_menu/popup_menu.dart';
-
+import 'package:todo/shared/utils/navigation.dart';
+import '../../../shared/components/toast_component.dart';
+import '../../../shared/utils/app_routes.dart';
 import '../../componantes/contanier_widget.dart';
+import '../../componantes/one_task_shimmer.dart';
+import '../../componantes/pop_menu_one_task.dart';
 import '../../componantes/qr_code_widget.dart';
+import '../controller/home_controller/home_cubit.dart';
 import '../controller/one_task_controller/one_task_cubit.dart';
 import '../controller/one_task_controller/one_task_states.dart';
 
@@ -25,7 +29,10 @@ class TaskDetailsScreen extends StatelessWidget {
         appBar: AppBar(
           leadingWidth: 35,
           leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
+            onTap: () {
+              Navigator.pop(context);
+              context.read<HomeCubit>().fetchTasks();
+            },
             child: Image.asset(
               ImageAssets.arrowBack,
               color: AppColors.dark,
@@ -34,7 +41,16 @@ class TaskDetailsScreen extends StatelessWidget {
             ),
           ),
           actions: [
-            PopupMenuButtonWidget(taskId: taskId),
+            BlocBuilder<TaskCubit, TaskState>(
+              builder: (context, state) {
+                if (state is TaskLoaded) {
+                  final task = state.task;
+                  return PopupMenuButtonWidget(task: task);
+                } else {
+                  return Container();
+                }
+              },
+            ),
           ],
           title: const Text(
             'Task Details',
@@ -45,14 +61,29 @@ class TaskDetailsScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: BlocBuilder<TaskCubit, TaskState>(
+        body: BlocConsumer<TaskCubit, TaskState>(
+          listener: (context, state) {
+            if (state is DeleteLoaded) {
+              showToast(
+                  text: 'Task deleted successfully',
+                  state: ToastStates.SUCCESS);
+              // Navigate to home screen after successful deletion
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                Routes.homeScreen,
+                (route) => false,
+              );
+            } else if (state is DeleteError) {
+              showToast(text: state.message, state: ToastStates.ERROR);
+            }
+          },
           builder: (context, state) {
             if (state is TaskLoading) {
-              return Center(child: CircularProgressIndicator());
+              return buildShimmerOneTaskEffect(context);
             } else if (state is TaskLoaded) {
               final task = state.task;
               final DateFormat formatter = DateFormat('d MMMM, yyyy');
-              final String formattedDate = formatter.format(task.updatedAt!);
+              final String formattedDate = formatter.format(task.updatedAt);
 
               return Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -81,9 +112,9 @@ class TaskDetailsScreen extends StatelessWidget {
                     SizedBox(height: mediaQueryHeight(context) * .01),
                     taskDetailsWidget(context, formattedDate),
                     SizedBox(height: mediaQueryHeight(context) * .01),
-                    taskDetailsOneTextWidget(context, task.priority),
+                    taskDetailsOneTextWidget(context, task.status),
                     SizedBox(height: mediaQueryHeight(context) * .01),
-                    taskDetailsOneFlagWidget(context, task.status),
+                    taskDetailsOneFlagWidget(context, task.priority),
                     SizedBox(height: mediaQueryHeight(context) * .04),
                     QrCodeWidget(taskId: task.id),
                     // Add more task details here
@@ -97,82 +128,6 @@ class TaskDetailsScreen extends StatelessWidget {
             }
           },
         ),
-      ),
-    );
-  }
-}
-
-
-
-class PopupMenuButtonWidget extends StatelessWidget {
-  final String taskId;
-  final GlobalKey menuKey = GlobalKey();
-
-  PopupMenuButtonWidget({required this.taskId});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-
-      key: menuKey,
-      child: IconButton(
-        icon: Icon(Icons.more_vert, color: AppColors.dark),
-        onPressed: () {
-          PopupMenu menu = PopupMenu(
-
-            config:   MenuConfig(
-              backgroundColor: AppColors.primaryback,
-              type: MenuType.list,
-              itemHeight:   mediaQueryHeight(context) * .04,
-              itemWidth:    mediaQueryWidth(context) * .25,
-
-            ),
-
-            context: context,
-            items: [
-
-              MenuItem(
-
-                  title: 'Edit', textStyle: TextStyle(color: AppColors.dark)),
-              MenuItem(title: 'Delete', textStyle: TextStyle(color: Colors.red)),
-            ],
-            onClickMenu: (MenuItemProvider item) {
-              if (item.menuTitle == 'Edit') {
-
-              } else if (item.menuTitle == 'Delete') {
-                // Handle delete action
-                _showDeleteConfirmationDialog(context, taskId);
-              }
-            },
-          );
-          menu.show(widgetKey: menuKey);
-        },
-      ),
-    );
-  }
-
-  void _showDeleteConfirmationDialog(BuildContext context, String taskId) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Delete Task'),
-        content: Text('Are you sure you want to delete this task?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              // Handle delete action here
-             // context.read<TaskCubit>().deleteTask(taskId);
-              Navigator.pop(context);
-            },
-            child: Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
       ),
     );
   }

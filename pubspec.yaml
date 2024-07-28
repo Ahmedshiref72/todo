@@ -45,6 +45,7 @@ dependencies:
   dotted_border:
   shimmer:
   buttons_tabbar:
+  camera:
   popup_menu:
   fluttertoast: ^8.1.1
   lottie: ^2.0.0

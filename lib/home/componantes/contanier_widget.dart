@@ -106,6 +106,7 @@ Widget taskDetailsOneFlagWidget(
         Text(
           '$text Priority',
           style: const TextStyle(
+
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: AppColors.primary,
