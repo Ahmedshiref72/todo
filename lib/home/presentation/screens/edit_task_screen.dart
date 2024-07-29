@@ -6,8 +6,9 @@ import 'package:todo/shared/components/toast_component.dart';
 import 'package:todo/shared/global/app_colors.dart';
 import 'package:todo/shared/utils/app_values.dart';
 import 'package:todo/shared/utils/navigation.dart';
+import 'package:todo/shared/utils/app_strings.dart';  // Import AppStrings
 
-import '../../../auth/presentation/screens/register_screen.dart';
+import '../../../auth/components/custom_dicoration.dart';
 import '../../../shared/utils/app_assets.dart';
 import '../../../shared/utils/app_routes.dart';
 import '../../componantes/custom_drop_dow_widget.dart';
@@ -21,6 +22,7 @@ class EditTaskScreen extends StatelessWidget {
   final TextEditingController dueDateController = TextEditingController();
   final TextEditingController statusController = TextEditingController();
   final String taskId;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Add this
 
   EditTaskScreen({
     super.key,
@@ -58,180 +60,187 @@ class EditTaskScreen extends StatelessWidget {
               ),
             ),
           ),
-          title: const Text('Edit Task',
-              style: TextStyle(
-                  color: AppColors.dark,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold)),
-        ),
+          title:  Text(AppStrings.updateTask,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: AppColors.dark,
+              ))),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () {},
-                  child: DottedBorder(
-                    color: AppColors.primary,
-                    strokeWidth: 2,
-                    dashPattern: [6, 3],
-                    borderType: BorderType.RRect,
-                    radius: const Radius.circular(20),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(25)),
-                      child: SizedBox(
-                        width: double.infinity,
-                        height: mediaQueryHeight(context) * 0.1,
-                        child: const Center(
-                          child: Text(
-                            'Add Img',
-                            style: TextStyle(color: Colors.purple),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: mediaQueryHeight(context) * 0.02),
-                const Text('Task Title',
-                    style: TextStyle(color: AppColors.boldGrey)),
-                SizedBox(height: mediaQueryHeight(context) * 0.01),
-                TextField(
-                  controller: titleController,
-                  decoration: inputDecoration('Enter Title here..'),
-                ),
-                SizedBox(height: mediaQueryHeight(context) * 0.02),
-                const Text('Task Description',
-                    style: TextStyle(color: AppColors.boldGrey)),
-                SizedBox(height: mediaQueryHeight(context) * 0.01),
-                TextField(
-                  controller: descController,
-                  decoration: inputDecoration('Enter Description here..',
-                      alignLabelWithHint: true),
-                  maxLines: 4,
-                ),
-                SizedBox(height: mediaQueryHeight(context) * 0.02),
-                const Text('Task Priority',
-                    style: TextStyle(color: AppColors.boldGrey)),
-                SizedBox(height: mediaQueryHeight(context) * 0.01),
-                CustomDropdown(
-                  priorityController: priorityController,
-                ),
-                SizedBox(height: mediaQueryHeight(context) * 0.02),
-                const Text('Due Date',
-                    style: TextStyle(color: AppColors.boldGrey)),
-                SizedBox(height: mediaQueryHeight(context) * 0.01),
-                TextField(
-                  controller: dueDateController,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Enter due date...',
-                    labelStyle: TextStyle(color: AppColors.boldGrey),
-                    suffixIcon: Icon(
-                      Icons.calendar_month,
+            child: Form(
+              key: _formKey, // Wrap with Form
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () {},
+                    child: DottedBorder(
                       color: AppColors.primary,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      borderSide: BorderSide(
-                        color: AppColors.boldGrey,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      borderSide: BorderSide(
-                        color: AppColors.boldGrey,
+                      strokeWidth: 2,
+                      dashPattern: [6, 3],
+                      borderType: BorderType.RRect,
+                      radius: const Radius.circular(20),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.all(Radius.circular(25)),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: mediaQueryHeight(context) * 0.1,
+                          child: const Center(
+                            child: Text(
+                              AppStrings.addImg,
+                              style: TextStyle(color: AppColors.primary),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101),
-                      builder: (BuildContext context, Widget? child) {
-                        return Theme(
-                          data: ThemeData.light().copyWith(
-                            primaryColor: Theme.of(context).primaryColor,
-                            buttonTheme: const ButtonThemeData(
-                                textTheme: ButtonTextTheme.primary),
-                            scaffoldBackgroundColor:
-                                Theme.of(context).primaryColor,
-                          ),
-                          child: child!,
-                        );
-                      },
-                    );
-
-                    if (pickedDate != null) {
-                      String formattedDate =
-                          DateFormat('yyyy-MM-dd').format(pickedDate);
-                      dueDateController.text = formattedDate;
-                    }
-                  },
-                ),
-                SizedBox(height: mediaQueryHeight(context) * 0.02),
-                BlocConsumer<EditTaskCubit, EditTaskState>(
-                  listener: (context, state) {
-                    if (state is EditTaskSuccess) {
-                      showToast(
-                          text: 'Task updated successfully',
-                          state: ToastStates.SUCCESS);
-                      navigateTo(context: context, screenRoute: Routes.taskDetailScreen, arguments: taskId);
-                    } else if (state is EditTaskFailure) {
-                      showToast(text: state.error, state: ToastStates.ERROR);
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is EditTaskLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary,
-                        ),
-                      );
-                    }
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
+                  SizedBox(height: mediaQueryHeight(context) * 0.02),
+                  Text(AppStrings.taskTitle,
+                      style: TextStyle(color: AppColors.boldGrey)),
+                  SizedBox(height: mediaQueryHeight(context) * 0.01),
+                  TextFormField(
+                    controller: titleController,
+                    decoration: inputDecoration(AppStrings.enterTitle),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a title';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: mediaQueryHeight(context) * 0.02),
+                  Text(AppStrings.taskDescription,
+                      style: TextStyle(color: AppColors.boldGrey)),
+                  SizedBox(height: mediaQueryHeight(context) * 0.01),
+                  TextFormField(
+                    controller: descController,
+                    decoration: inputDecoration(AppStrings.enterDescription,
+                        alignLabelWithHint: true),
+                    maxLines: 4,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a description';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: mediaQueryHeight(context) * 0.02),
+                  Text(AppStrings.taskPriority,
+                      style: TextStyle(color: AppColors.boldGrey)),
+                  SizedBox(height: mediaQueryHeight(context) * 0.01),
+                  CustomDropdown(
+                    priorityController: priorityController,
+                  ),
+                  SizedBox(height: mediaQueryHeight(context) * 0.02),
+                  Text(AppStrings.dueDate,
+                      style: TextStyle(color: AppColors.boldGrey)),
+                  SizedBox(height: mediaQueryHeight(context) * 0.01),
+                  TextFormField(
+                    controller: dueDateController,
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                      labelText: AppStrings.enterDueDate,
+                      labelStyle: TextStyle(color: AppColors.boldGrey),
+                      suffixIcon: Icon(
+                        Icons.calendar_month,
                         color: AppColors.primary,
                       ),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          BlocProvider.of<EditTaskCubit>(context).updateTask(
-                            taskId: taskId,
-                            image: imageController.text,
-                            title: titleController.text,
-                            desc: descController.text,
-                            priority: priorityController.text,
-                            status: statusController.text,
-                          );
-                          print(dueDateController.text);
-                          print(priorityController.text);
-                          print(descController.text);
-                          print(titleController.text);
-                          print(imageController.text);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
-                        child: const Text(
-                          'Update Task',
-                          style: TextStyle(
-                              color: AppColors.background,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        borderSide: BorderSide(
+                          color: AppColors.boldGrey,
                         ),
                       ),
-                    );
-                  },
-                ),
-              ],
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        borderSide: BorderSide(
+                          color: AppColors.boldGrey,
+                        ),
+                      ),
+                    ),
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                        builder: (BuildContext context, Widget? child) {
+                          return Theme(
+                            data: ThemeData.light().copyWith(
+                              primaryColor: Theme.of(context).primaryColor,
+                              buttonTheme: const ButtonThemeData(
+                                  textTheme: ButtonTextTheme.primary),
+                              scaffoldBackgroundColor:
+                              Theme.of(context).primaryColor,
+                            ),
+                            child: child!,
+                          );
+                        },
+                      );
+
+                      if (pickedDate != null) {
+                        String formattedDate =
+                        DateFormat('yyyy-MM-dd').format(pickedDate);
+                        dueDateController.text = formattedDate;
+                      }
+                    },
+                  ),
+                  SizedBox(height: mediaQueryHeight(context) * 0.02),
+                  BlocConsumer<EditTaskCubit, EditTaskState>(
+                    listener: (context, state) {
+                      if (state is EditTaskSuccess) {
+                        showToast(
+                            text: AppStrings.taskUpdatedSuccess,
+                            state: ToastStates.SUCCESS);
+                        navigateTo(context: context, screenRoute: Routes.taskDetailScreen, arguments: taskId);
+                      } else if (state is EditTaskFailure) {
+                        showToast(text: state.error, state: ToastStates.ERROR);
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is EditTaskLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primary,
+                          ),
+                        );
+                      }
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: AppColors.primary,
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              BlocProvider.of<EditTaskCubit>(context).updateTask(
+                                taskId: taskId,
+                                image: imageController.text,
+                                title: titleController.text,
+                                desc: descController.text,
+                                priority: priorityController.text,
+                                status: statusController.text,
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            minimumSize: const Size(double.infinity, 50),
+                          ),
+                          child: Text(
+                            AppStrings.updateTask,
+                            style: Theme  .of(context).textTheme.labelMedium,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

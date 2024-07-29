@@ -50,10 +50,7 @@ class CustomDropdown extends StatelessWidget {
                 SizedBox(width: mediaQueryWidth(context) * .02),
                 Text(
                   'Low Priority',
-                  style: TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
+                  style: Theme.of(context ).textTheme.titleMedium,
                 ),
               ],
             ),
@@ -71,10 +68,7 @@ class CustomDropdown extends StatelessWidget {
                 SizedBox(width: mediaQueryWidth(context) * .02),
                 Text(
                   'Medium Priority',
-                  style: TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
+                  style: Theme.of(context ).textTheme.titleMedium,
                 ),
               ],
             ),
@@ -92,10 +86,7 @@ class CustomDropdown extends StatelessWidget {
                 SizedBox(width: mediaQueryWidth(context) * .02),
                 Text(
                   'High Priority',
-                  style: TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
+                  style: Theme.of(context ).textTheme.titleMedium,
                 ),
               ],
             ),

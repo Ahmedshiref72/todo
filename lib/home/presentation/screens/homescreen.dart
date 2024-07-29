@@ -10,6 +10,7 @@ import 'package:todo/shared/utils/navigation.dart';
 import '../../../shared/global/app_colors.dart';
 import '../../../shared/utils/app_assets.dart';
 import '../../../shared/utils/app_routes.dart';
+import '../../../shared/utils/app_strings.dart';
 import '../../componantes/dialog_log_out.dart';
 import '../../componantes/home_shimmer.dart';
 import '../../componantes/widget_card.dart';
@@ -47,7 +48,8 @@ class _HomeScreenState extends State<HomeScreen>
           showToast(text: state.message, state: ToastStates.ERROR);
         } else if (state is LogOutSuccessState) {
           showToast(
-              text: 'Logged out successfully', state: ToastStates.SUCCESS);
+              text: AppStrings.loggedOutSuccessfully,
+              state: ToastStates.SUCCESS);
           navigateTo(context: context, screenRoute: Routes.loginScreen);
         }
       },
@@ -59,12 +61,10 @@ class _HomeScreenState extends State<HomeScreen>
             length: 4,
             child: Scaffold(
               appBar: AppBar(
-                  title: const Text(
-                    'Logo',
-                    style: TextStyle(
-                        color: AppColors.dark,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold),
+                  automaticallyImplyLeading: false,
+                  title: Text(
+                    AppStrings.logo,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   actions: [
                     Row(
@@ -85,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen>
                         IconButton(
                           onPressed: () async {
                             final shouldLogout =
-                            await showLogoutConfirmationDialog(context);
+                                await showLogoutConfirmationDialog(context);
                             if (shouldLogout == true) {
                               context.read<HomeCubit>().logout();
                             }
@@ -103,11 +103,15 @@ class _HomeScreenState extends State<HomeScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text('My tasks',
-                              style: TextStyle(
-                                  color: AppColors.boldGrey, fontSize: 22)),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(AppStrings.myTasks,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                      color: AppColors.boldGrey,
+                                      fontWeight: FontWeight.w700)),
                         ),
                         SizedBox(height: mediaQueryHeight(context) * 0.01),
                         ButtonsTabBar(
@@ -115,25 +119,27 @@ class _HomeScreenState extends State<HomeScreen>
                             borderRadius: BorderRadius.circular(20),
                             color: AppColors.primary,
                           ),
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 10),
                           labelSpacing: 10,
                           unselectedDecoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             color: AppColors.backgroundLight.withOpacity(0.5),
                           ),
-                          buttonMargin:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                          buttonMargin: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 5),
                           height: mediaQueryHeight(context) * 0.05,
                           tabs: const [
-                            Tab(child: Text('All')),
-                            Tab(child: Text('In progress')),
-                            Tab(child: Text('Waiting')),
-                            Tab(child: Text('Finished')),
+                            Tab(child: Text(AppStrings.all)),
+                            Tab(child: Text(AppStrings.inProgress)),
+                            Tab(child: Text(AppStrings.waiting)),
+                            Tab(child: Text(AppStrings.finished)),
                           ],
                           controller: _tabController,
                           unselectedLabelStyle:
-                          TextStyle(color: AppColors.boldGrey),
-                          labelStyle: TextStyle(color: AppColors.background),
+                              const TextStyle(color: AppColors.boldGrey),
+                          labelStyle:
+                              const TextStyle(color: AppColors.background),
                         ),
                       ],
                     ),
@@ -142,13 +148,14 @@ class _HomeScreenState extends State<HomeScreen>
               body: TabBarView(
                 controller: _tabController,
                 children: [
-                  buildTaskList(state.allTasks, 'No tasks available', context),
+                  buildTaskList(
+                      state.allTasks, AppStrings.noTasksAvailable, context),
                   buildTaskList(state.inProgressTasks,
-                      'No in-progress tasks available', context),
+                      AppStrings.noInProgressTasksAvailable, context),
                   buildTaskList(state.waitingTasks,
-                      'No waiting tasks available', context),
+                      AppStrings.noWaitingTasksAvailable, context),
                   buildTaskList(state.finishedTasks,
-                      'No finished tasks available', context),
+                      AppStrings.noFinishedTasksAvailable, context),
                 ],
               ),
               floatingActionButton: Align(
@@ -158,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen>
                   children: [
                     buildDialQr(
                       context,
-                          () {
+                      () {
                         navigateTo(
                             context: context, screenRoute: Routes.qrScreen);
                       },
@@ -166,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen>
                     SizedBox(height: mediaQueryHeight(context) * 0.02),
                     buildDialAdd(
                       context,
-                          () {
+                      () {
                         navigateTo(
                             context: context,
                             screenRoute: Routes.addNewTaskScreen);
@@ -180,7 +187,8 @@ class _HomeScreenState extends State<HomeScreen>
         } else if (state is HomeErrorState) {
           return Scaffold(body: Center(child: Text(state.message)));
         } else {
-          return Scaffold(body: const Center(child: Text('Unexpected state')));
+          return const Scaffold(
+              body: Center(child: Text(AppStrings.unexpectedState)));
         }
       },
     );

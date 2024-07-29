@@ -1,5 +1,3 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/shared/utils/navigation.dart';
@@ -14,19 +12,20 @@ import '../presentation/data/task_model.dart';
 Widget buildTaskList(List<Task> tasks, String emptyMessage, context) {
   if (tasks.isEmpty) {
     return Center(
-        child: Text(emptyMessage, style: TextStyle(color: AppColors.boldGrey)));
+        child:
+            Text(emptyMessage, style: Theme.of(context).textTheme.titleMedium));
   }
 
   return RefreshIndicator(
     onRefresh: () async {
-     HomeCubit.get(context).fetchTasks();
+      HomeCubit.get(context).fetchTasks();
     },
     child: ListView.builder(
       itemCount: tasks.length,
       itemBuilder: (context, index) {
         final task = tasks[index];
         final formattedDate = task.createdAt != null
-            ? DateFormat('yyyy/MM/dd').format(task.createdAt!)
+            ? DateFormat('yyyy/MM/dd').format(task.createdAt)
             : 'No Date'; // Format your date as needed
 
         Color statusColor;
@@ -61,13 +60,12 @@ Widget buildTaskList(List<Task> tasks, String emptyMessage, context) {
             priorityColor = AppColors.boldGrey; // Default color
         }
 
-        // Debug print
-        print('Task status: ${task.status}, Status color: $priorityColor');
-
         return GestureDetector(
-          onTap: ()
-          {
-            navigateTo(context: context, screenRoute:Routes.taskDetailScreen ,arguments: task.id)  ;
+          onTap: () {
+            navigateTo(
+                context: context,
+                screenRoute: Routes.taskDetailScreen,
+                arguments: task.id);
           },
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -99,8 +97,7 @@ Widget buildTaskList(List<Task> tasks, String emptyMessage, context) {
                             child: Text(
                               task.title,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
+                              style: Theme.of(context).textTheme.displayMedium,
                             ),
                           ),
                           SizedBox(width: mediaQueryWidth(context) * .02),
@@ -138,8 +135,7 @@ Widget buildTaskList(List<Task> tasks, String emptyMessage, context) {
                             child: Text(
                               task.desc,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                  fontSize: 18, color: AppColors.boldGrey),
+                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
                           ),
                           SizedBox(width: mediaQueryWidth(context) * .02),
@@ -157,15 +153,18 @@ Widget buildTaskList(List<Task> tasks, String emptyMessage, context) {
                           Text(
                             task.priority,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: priorityColor,
-                                fontWeight: FontWeight.bold),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall!
+                                .copyWith(
+                                  color: priorityColor,
+                                ),
                           ),
-                          Spacer(),
-                          Text(formattedDate,
-                              style: TextStyle(
-                                  color: AppColors.boldGrey, fontSize: 16)),
+                          const Spacer(),
+                          Text(
+                            formattedDate,
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          )
                         ],
                       ),
                     ],

@@ -5,6 +5,7 @@ import 'package:todo/home/presentation/controller/home_controller/home_cubit.dar
 import 'package:todo/shared/components/toast_component.dart';
 import '../../shared/global/app_colors.dart';
 import '../../shared/utils/app_routes.dart';
+import '../../shared/utils/app_strings.dart';
 import '../../shared/utils/navigation.dart';
 import '../presentation/controller/one_task_controller/one_task_cubit.dart';
 import '../presentation/controller/one_task_controller/one_task_states.dart';
@@ -21,7 +22,7 @@ class PopupMenuButtonWidget extends StatelessWidget {
     return BlocConsumer<TaskCubit, TaskState>(
       listener: (context, state) {
         if (state is DeleteLoaded) {
-          showToast(text: 'تم الحذف بنجاح', state: ToastStates.SUCCESS);
+          showToast(text: AppStrings.deleteSuccess, state: ToastStates.SUCCESS);
         } else if (state is DeleteError) {
           showToast(text: state.message, state: ToastStates.ERROR);
         }
@@ -42,16 +43,16 @@ class PopupMenuButtonWidget extends StatelessWidget {
                 context: context,
                 items: [
                   MenuItem(
-                    title: 'Edit',
+                    title: AppStrings.edit,
                     textStyle: TextStyle(color: AppColors.dark),
                   ),
                   MenuItem(
-                    title: 'Delete',
+                    title: AppStrings.delete,
                     textStyle: TextStyle(color: Colors.red),
                   ),
                 ],
                 onClickMenu: (MenuItemProvider item) {
-                  if (item.menuTitle == 'Edit') {
+                  if (item.menuTitle == AppStrings.edit) {
                     navigateTo(
                       context: context,
                       screenRoute: Routes.editTaskScreen,
@@ -65,7 +66,7 @@ class PopupMenuButtonWidget extends StatelessWidget {
                         'status': task.status,
                       },
                     );
-                  } else if (item.menuTitle == 'Delete') {
+                  } else if (item.menuTitle == AppStrings.delete) {
                     _showDeleteConfirmationDialog(context, task.id);
                   }
                 },
@@ -82,22 +83,22 @@ class PopupMenuButtonWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Task'),
-        content: Text('Are you sure you want to delete this task?'),
+        title: Text(AppStrings.deleteTask),
+        content: Text(AppStrings.deleteConfirmation),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text('Cancel'),
+            child: Text(AppStrings.cancel),
           ),
           TextButton(
             onPressed: () {
               context.read<TaskCubit>().deleteTask(taskId, context);
               context.read<HomeCubit>().fetchTasks();
-              navigateTo(context: context, screenRoute: Routes.homeScreen ) ;
+              navigateTo(context: context, screenRoute: Routes.homeScreen);
             },
-            child: Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(AppStrings.delete, style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

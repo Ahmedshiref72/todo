@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class FontConstants {
   static const String dINNextLTArabicFontFamily = "DIN Next LT Arabic";
+  static const String dMSansFontFamily = "DMSans";
 }
 
 class FontWeightManager {

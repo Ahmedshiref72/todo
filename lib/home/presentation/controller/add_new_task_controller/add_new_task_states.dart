@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:todo/home/presentation/data/task_model.dart';
+
+import '../../data/task_model.dart';
 
 abstract class TodoState extends Equatable {
   const TodoState();
@@ -25,6 +26,26 @@ class TodoFailure extends TodoState {
   final String error;
 
   const TodoFailure(this.error);
+
+  @override
+  List<Object> get props => [error];
+}
+
+class ImageUploadLoading extends TodoState {}
+
+class ImageUploadSuccess extends TodoState {
+  final String imageUrl;
+
+  const ImageUploadSuccess(this.imageUrl);
+
+  @override
+  List<Object> get props => [imageUrl];
+}
+
+class ImageUploadFailure extends TodoState {
+  final String error;
+
+  const ImageUploadFailure(this.error);
 
   @override
   List<Object> get props => [error];

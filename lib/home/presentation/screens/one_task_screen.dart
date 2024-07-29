@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/shared/global/app_colors.dart';
+import 'package:todo/shared/utils/app_strings.dart';
 import 'package:todo/shared/utils/app_values.dart';
 import 'package:todo/shared/utils/app_assets.dart';
 import 'package:todo/shared/utils/navigation.dart';
@@ -52,27 +53,19 @@ class TaskDetailsScreen extends StatelessWidget {
               },
             ),
           ],
-          title: const Text(
-            'Task Details',
-            style: TextStyle(
-              color: AppColors.dark,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+          title:  Text(
+           AppStrings.taskDetails,
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: AppColors.dark,
+              ))),
         body: BlocConsumer<TaskCubit, TaskState>(
           listener: (context, state) {
             if (state is DeleteLoaded) {
               showToast(
-                  text: 'Task deleted successfully',
+                  text: AppStrings.taskDeletedSuccess,
                   state: ToastStates.SUCCESS);
-              // Navigate to home screen after successful deletion
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                Routes.homeScreen,
-                (route) => false,
-              );
+              navigateFinalTo(context: context, screenRoute: Routes.homeScreen );
+
             } else if (state is DeleteError) {
               showToast(text: state.message, state: ToastStates.ERROR);
             }
@@ -103,12 +96,10 @@ class TaskDetailsScreen extends StatelessWidget {
                       },
                     ),
                     Text(task.title,
-                        style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold)),
+                        style: Theme.of(context).textTheme.titleLarge),
                     SizedBox(height: mediaQueryHeight(context) * .01),
                     Text(task.desc,
-                        style: const TextStyle(
-                            fontSize: 16, color: AppColors.boldGrey)),
+                        style:Theme.of(context).textTheme.titleSmall),
                     SizedBox(height: mediaQueryHeight(context) * .01),
                     taskDetailsWidget(context, formattedDate),
                     SizedBox(height: mediaQueryHeight(context) * .01),

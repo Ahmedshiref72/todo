@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:todo/shared/utils/app_strings.dart';
 import 'package:todo/shared/utils/navigation.dart';
 
 import '../../../shared/global/app_colors.dart';
@@ -24,52 +24,49 @@ class BoardingScreen extends StatelessWidget {
               Align(
                 alignment: Alignment.topCenter,
                 child: Text(
-                  'Task Management &',
-                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                      color: AppColors.dark,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 26),
+                 AppStrings.taskManagement,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
               Align(
                 alignment: Alignment.topCenter,
                 child: Text(
-                  'To-Do List',
-                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                      color: AppColors.dark,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 26),
+                  AppStrings.toDoList,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
               SizedBox(height: mediaQueryHeight(context) * 0.05),
               Align(
                 alignment: Alignment.topCenter,
                 child: Text(
-                  'This productive tool is designed to help',
-                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                      color: AppColors.boldGrey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),
+                  AppStrings.thisProductive,
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        fontWeight: FontWeight.w400,
+                      ),
                 ),
               ),
               Align(
                 alignment: Alignment.topCenter,
                 child: Text(
-                  'you better manage your task ',
-                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                      color: AppColors.boldGrey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),
+                  AppStrings.youBetterManage,
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        fontWeight: FontWeight.w400,
+                      ),
                 ),
               ),
               Align(
                 alignment: Alignment.topCenter,
                 child: Text(
-                  'project-wise conveniently!',
-                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                      color: AppColors.boldGrey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),
+                  AppStrings.projectWiseConveniently,
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        fontWeight: FontWeight.w400,
+                      ),
                 ),
               ),
               SizedBox(height: mediaQueryHeight(context) * 0.04),
@@ -81,22 +78,20 @@ class BoardingScreen extends StatelessWidget {
                         context: context, screenRoute: Routes.loginScreen);
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    textStyle: TextStyle(fontSize: 18),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                     backgroundColor: AppColors.primary,
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Let’s Start',
-                          style: TextStyle(
-                              color: AppColors.offWhite,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold)),
-                      Image(
+                      Text(
+                        AppStrings.letsStart,
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      const Image(
                         image: AssetImage(
                           ImageAssets.icon,
                         ),

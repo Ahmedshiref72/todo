@@ -12,6 +12,7 @@ class AppColors {
   static const Color backgroundLight = Color(0xFFBABABA);
   static const Color orangeBold = Color(0xFFFF7D53);
   static const Color offWhite = Color(0xFFF2F3F8);
+  static const Color offWhite1 = Color(0xFF2F2F2F99);
   static const Color offBlue = Color(0xFF0087FF);
   static const Color dark = Color(0xFF000000);
   static const Color lightGreen = Color(0xFF00F57B);

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo/shared/components/toast_component.dart';
 import '../../auth/presentation/controller/auth_cubit.dart'; // Update this path as needed
 
 class DioHelper {
@@ -122,6 +125,28 @@ class DioHelper {
       throw Exception(e.message);
     }
   }
+
+  static Future<Response> uploadFile({
+    required String url,
+    required File file,
+    String? token,
+  }) async {
+    try {
+      if (token != null) {
+        dio!.options.headers['Authorization'] = 'Bearer $token';
+      }
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(file.path, filename: file.path.split('/').last),
+      });
+      return await dio!.post(
+        url,
+        data: formData,
+      );
+    } on DioError catch (e) {
+      throw Exception(e.message);
+    }
+  }
+
 }
 
 
@@ -181,8 +206,7 @@ class RefreshTokenInterceptor extends Interceptor {
     prefs.remove('token');
     prefs.remove('refreshToken');
     // Navigate to login screen
-    navigatorKey.currentState?.pushNamedAndRemoveUntil(
-        '/loginScreen', (Route<dynamic> route) => false);
+ //  showToast(text: 'تم تسجيل الخروج بنجاح', state: ToastStates.ERROR);
   }
 
   void _handleNotFoundError() {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../shared/global/app_colors.dart';
+import '../../shared/utils/app_strings.dart';
 
 Future<bool?> showLogoutConfirmationDialog(BuildContext context) {
   return showDialog<bool>(
@@ -8,29 +8,26 @@ Future<bool?> showLogoutConfirmationDialog(BuildContext context) {
     builder: (context) => AlertDialog(
       backgroundColor: AppColors.primaryback,
       title: Text(
-        'Confirm Logout',
-        style: TextStyle(
-            color: AppColors.primary,
-            fontSize: 20,
-            fontWeight: FontWeight.bold),
+        AppStrings.confirmLogout,
+        style: Theme.of(context).textTheme.titleLarge,
       ),
       content: Text(
-        'Are you sure you want to log out?',
-        style: TextStyle(color: AppColors.boldGrey),
+        AppStrings.logoutConfirmation,
+        style: const TextStyle(color: AppColors.boldGrey),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text(
-            'Cancel',
+          child: const Text(
+            AppStrings.cancel,
             style: TextStyle(color: AppColors.boldGrey),
           ),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(
-            'Logout',
-            style: TextStyle(color: AppColors.red),
+            AppStrings.logout,
+            style: const TextStyle(color: AppColors.red),
           ),
         ),
       ],

@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:todo/shared/utils/navigation.dart';
 import 'package:todo/shared/global/app_colors.dart';
 import 'package:todo/shared/utils/app_routes.dart';
+import 'package:todo/shared/utils/app_strings.dart';
 import '../presentation/controller/one_task_controller/one_task_cubit.dart';
 import '../presentation/screens/one_task_screen.dart';
 
@@ -40,7 +41,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text('QR Scanner'),
+        title: Text(AppStrings.qrScanner),
       ),
       body: Column(
         children: <Widget>[
@@ -54,7 +55,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
           const Expanded(
             flex: 2,
             child: Center(
-              child: Text('Scan a QR code'),
+              child: Text(AppStrings.scanQRCode),
             ),
           ),
           if (cameraController != null && cameraController!.value.isInitialized)
@@ -62,7 +63,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
               child: Center(
                 child: ElevatedButton(
                   onPressed: _takePhoto,
-                  child: Text('Take Photo'),
+                  child: Text(AppStrings.takePhoto),
                 ),
               ),
             ),
@@ -80,7 +81,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
         _reloadTask(scannedCode);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Invalid QR code')),
+          SnackBar(content: Text(AppStrings.invalidQRCode)),
         );
       }
     });
@@ -95,28 +96,27 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
         _reloadTask(scannedCode);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No QR code found in the photo')),
+          SnackBar(content: Text(AppStrings.noQRCodeFound)),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error taking photo: $e')),
+        SnackBar(content: Text('${AppStrings.errorTakingPhoto} $e')),
       );
     }
   }
 
   Future<String?> _extractQRCodeFromImage(String imagePath) async {
-    // Add logic to extract QR code from the image
-    // This may involve using a library like google_ml_vision or similar
-    return null; // Replace with actual QR code extraction logic
+    return null;
   }
 
   void _reloadTask(String qrCode) {
     BlocProvider.of<TaskCubit>(context).getTaskById(qrCode);
     navigateTo(
-        context: context,
-        screenRoute: Routes.taskDetailScreen,
-        arguments: qrCode);
+      context: context,
+      screenRoute: Routes.taskDetailScreen,
+      arguments: qrCode,
+    );
   }
 
   @override

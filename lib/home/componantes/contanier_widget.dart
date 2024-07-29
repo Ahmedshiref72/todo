@@ -27,16 +27,14 @@ Widget taskDetailsWidget(context, String formattedDate) {
                 'End Date',
                 style: TextStyle(fontSize: 10, color: AppColors.boldGrey),
               ),
-              Text(
-                formattedDate,
-                style: const TextStyle(
-                  fontSize: 16,
-                ),
-              ),
+              Text(formattedDate,
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                        color: AppColors.dark,
+                      )),
             ],
           ),
         ),
-        Spacer(),
+        const Spacer(),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 12),
           child: Image(
@@ -61,14 +59,7 @@ Widget taskDetailsOneTextWidget(context, String text) {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primary,
-            ),
-          ),
+          child: Text(text, style: Theme.of(context).textTheme.titleMedium),
         ),
         const Spacer(),
         const Padding(
@@ -100,18 +91,10 @@ Widget taskDetailsOneFlagWidget(
           padding: EdgeInsets.symmetric(horizontal: 12),
           child: Image(
             image: AssetImage(ImageAssets.flag),
-            width: 24,
+            width: 22,
           ),
         ),
-        Text(
-          '$text Priority',
-          style: const TextStyle(
-
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: AppColors.primary,
-          ),
-        ),
+        Text('$text Priority', style: Theme.of(context).textTheme.titleMedium),
         const Spacer(),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 12),
@@ -139,19 +122,27 @@ Widget profileWidget(context, String text, String textHeader) {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text(textHeader),
+          SizedBox(height:  mediaQueryHeight(context) * .01,),
+          Text(
+            textHeader,
+            style: Theme.of(context).textTheme.displaySmall,
+          ),
+          SizedBox(height:  mediaQueryHeight(context) * .01,),
           Text(
             '$text ',
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: AppColors.boldGrey,
-            ),
+            style:Theme.of(context).textTheme.displayLarge,
           ),
         ],
       ),
     ),
   );
+}
+String formatPhoneNumber(String phoneNumber) {
+  if (phoneNumber.length >= 12) {
+    return '${phoneNumber.substring(0, 2)} ${phoneNumber.substring(2, 5)} ${phoneNumber.substring(5, 8)}-${phoneNumber.substring(8)}';
+  } else {
+    return phoneNumber; // return the phone number as is if it's not long enough
+  }
 }
 
 Widget profileCopyWidget(context, String text, String textHeader) {
@@ -170,14 +161,15 @@ Widget profileCopyWidget(context, String text, String textHeader) {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(textHeader),
+              SizedBox(height:  mediaQueryHeight(context) * .01,),
               Text(
-                '$text ',
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.boldGrey,
-                ),
+                textHeader,
+                style: Theme.of(context).textTheme.displaySmall,
+              ),
+              SizedBox(height:  mediaQueryHeight(context) * .01,),
+              Text(
+                formatPhoneNumber(text),
+                style:Theme.of(context).textTheme.displayLarge,
               ),
             ],
           ),
